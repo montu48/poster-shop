@@ -2,12 +2,14 @@ new Vue({
 	el:'#app',
 	data:{
 		total:0,
-		products:[
-			{title:"Product 1",id:"1",price:9.99},
-			{title:"Product 2",id:"2",price:9.99},
-			{title:"Product 3",id:"3",price:9.99},
-		],
-		cart:[]
+		products:[],
+		cart:[],
+		search: 'cat',
+		lastSearch:'',
+		loading:false
+	},
+	created:function(){
+		this.onSubmit()
 	},
 	methods:{
 		addToCart: function(product){	
@@ -39,6 +41,17 @@ new Vue({
 				var i = this.cart.indexOf(item);
 				this.cart.splice(i,1);
 			}
+		},
+		onSubmit:function(){
+			this.product = [];
+			this.loading = true;
+			var path = "/search?q=".concat(this.search);
+			this.$http.get(path)
+			.then(function(response){
+					this.products = response.data;
+					this.lastSearch = this.search;
+					this.loading = false
+			});
 		}
 	},
 	filters:{
